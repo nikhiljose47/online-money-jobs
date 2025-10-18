@@ -1,0 +1,10 @@
+<div class="container mt-4">
+<h3>Create a username</h3>
+<div class="mb-2">
+<input class="form-control" [(ngModel)]="username" placeholder="Choose a username" />
+</div>
+<button class="btn btn-primary" (click)="chooseUsername()" [disabled]="loading || !username">Create</button>
+<div *ngIf="error" class="text-danger mt-2">{{error}}</div>
+<div *ngIf="success" class="text-success mt-2">{{success}}</div>
+<p class="mt-3"><small>Note: this uses anonymous auth; username is tied to this browser session. For cross-device login see notes below.</small></p>
+</div>

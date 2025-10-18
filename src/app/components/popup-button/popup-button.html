@@ -1,0 +1,8 @@
+    <!-- Floating Button -->
+    <button class="fab" (click)="togglePopup()">
+      <span *ngIf="!showPopup()">＋</span>
+      <span *ngIf="showPopup()">✕</span>
+    </button>
+
+    <!-- Popup -->
+    <app-add-job-popup *ngIf="showPopup()" (closed)="togglePopup()"></app-add-job-popup>

@@ -1,0 +1,27 @@
+.jobs-container {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Floating Button */
+.floating-btn {
+  position: fixed;
+  right: 20%;
+  top: 50%;
+  transform: translateY(-50%) scale(2);
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.floating-btn:hover {
+  transform: translateY(-50%) scale(2.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}

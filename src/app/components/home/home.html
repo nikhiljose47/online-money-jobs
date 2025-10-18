@@ -1,0 +1,12 @@
+<div class="jobs-container">
+  <div *ngIf="loading()">Loading jobs...</div>
+
+  <div *ngIf="!loading()">
+    <div *ngFor="let job of jobs()">
+      {{ job.shortDesc }}
+    </div>
+  </div>
+
+  <!-- Floating Button -->
+  <floating-button></floating-button>
+</div>
