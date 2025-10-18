@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, getDoc, getDocs, setDoc, addDoc, query, limit, serverTimestamp } from '@angular/fire/firestore';
+import { Firestore, collection, doc, getDoc, getDocs, setDoc, addDoc, query, limit, serverTimestamp, collectionData } from '@angular/fire/firestore';
 import { Auth, signInAnonymously, onAuthStateChanged, User } from '@angular/fire/auth';
 import { Observable, from, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -55,13 +55,22 @@ export class FirebaseService {
   // ===============================
   // 🔹 JOB CRUD
   // ===============================
-  async getJobs(limitCount: number = 20) {
-    const jobsQuery = query(collection(this.firestore, 'jobs'), limit(limitCount));
-    const snapshot = await getDocs(jobsQuery);
-    return snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+  // async getJobs(limitCount: number = 20) {
+  //   const jobsQuery = query(collection(this.firestore, 'jobs'), limit(limitCount));
+  //   const snapshot = await getDocs(jobsQuery);
+  //   return snapshot.docs.map((doc) => ({
+  //     id: doc.id,
+  //     ...doc.data(),
+  //   }));
+  // }
+
+  getJobs(): Observable<any[]> {
+      const jobsCollection = collection(this.firestore, 'jobs');
+    
+    // Wrap the promise in an Observable
+    return from(getDocs(jobsCollection)).pipe(
+      map(snapshot => snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+    );
   }
 
   async getFirstJobContact() {
