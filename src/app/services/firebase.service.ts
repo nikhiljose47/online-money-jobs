@@ -3,6 +3,7 @@ import { Firestore, collection, doc, getDoc, getDocs, setDoc, addDoc, query, lim
 import { Auth, signInAnonymously, onAuthStateChanged, User } from '@angular/fire/auth';
 import { Observable, from, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Job } from '../models/job.model';
 
 @Injectable({
   providedIn: 'root',
@@ -87,13 +88,10 @@ export class FirebaseService {
   }
 
 
-  async addJob(username: string, shortDesc: string) {
+  async addJob(job: Job) {
     const colRef = collection(this.firestore, 'jobs');
-    await addDoc(colRef, {
-      username,
-      shortDesc,
-      createdAt: serverTimestamp(),
-    });
+    await addDoc(colRef, { id: job.id, title: job.title, shortDesc: job.shortDesc, description: job.description, status: job.status, createdAt: new Date().toISOString(), postedBy: 'user0', rewardOffered: job.rewardOffered, rating: job.rating }
+    );
   }
 
 

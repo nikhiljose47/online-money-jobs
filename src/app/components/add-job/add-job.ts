@@ -68,7 +68,7 @@ export class JobFormModalComponent {
     console.log('came add Job');
     this.loading.set(true);
     try {
-      await this.firebaseService.addJob(job.shortDesc, job.createdAt);
+      await this.firebaseService.addJob(job);
       this.message.set('✅ Job added successfully!');
       this.username = '';
       this.jobDetails = '';

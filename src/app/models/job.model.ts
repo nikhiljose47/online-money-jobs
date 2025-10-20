@@ -1,7 +1,7 @@
 export interface Job {
     id?: string;                // Firestore document ID (jobId)
     title: string;              // Job title
-        shortDesc: string;        // Job description/details
+    shortDesc: string;        // Job description/details
     description: string;        // Job description/details
     status: 'open' | 'closed' | 'onhold'; // Job status
     createdAt?: any;            // Firestore Timestamp

@@ -5,13 +5,12 @@ import { FloatingButtonComponent } from '../floating-button/floating-button';
 import { Observable } from 'rxjs';
 
 //
-import { v4 as uuidv4 } from 'uuid';
 import { Router } from '@angular/router';
 import { Job } from '../../models/job.model';
 import { JobFormModalComponent } from '../add-job/add-job';
 
 @Component({
-  selector: 'home-page',
+  selector: 'online-money-jobs',
   imports: [CommonModule, FloatingButtonComponent, JobFormModalComponent],
   templateUrl: './home.html',
   styleUrl: './home.scss'
@@ -23,7 +22,7 @@ export class Home {
 
   loading = signal(true);
   user = signal<{ name: string; karma: number; wallet: number } | null>({
-    name: 'John Doe',
+    name: 'Arjun Kumar (AK)',
     karma: 120,
     wallet: 500,
   });
@@ -43,7 +42,7 @@ export class Home {
 
     // Optional: debug effect
     effect(() => {
-      console.log('Jobs updated:', this.jobs());
+      //console.log('Jobs updated:;
     });
   }
 

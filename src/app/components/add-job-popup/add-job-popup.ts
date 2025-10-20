@@ -77,7 +77,7 @@ export class AddJobPopup {
 
     this.loading.set(true);
     try {
-      await this.firebaseService.addJob(this.username, this.jobDetails);
+      //await this.firebaseService.addJob(this.username, this.jobDetails);
       this.message.set('✅ Job added successfully!');
       this.username = '';
       this.jobDetails = '';
