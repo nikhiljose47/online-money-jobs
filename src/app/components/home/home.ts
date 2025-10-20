@@ -1,25 +1,84 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, OnInit, signal } from '@angular/core';
 import { FirebaseService } from '../../services/firebase.service';
 import { CommonModule } from '@angular/common';
 import { FloatingButtonComponent } from '../floating-button/floating-button';
+import { Observable } from 'rxjs';
+
+//
+import { v4 as uuidv4 } from 'uuid';
+import { Router } from '@angular/router';
+import { Job } from '../../models/job.model';
+import { JobFormModalComponent } from '../add-job/add-job';
 
 @Component({
   selector: 'home-page',
-  imports: [CommonModule, FloatingButtonComponent],
+  imports: [CommonModule, FloatingButtonComponent, JobFormModalComponent],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })
 export class Home {
-  jobs = signal<any[]>([]);
+  jobs$: Observable<any[]>;
+  jobs = signal<Job[]>([
+  ]);
+
   loading = signal(true);
+  user = signal<{ name: string; karma: number; wallet: number } | null>({
+    name: 'John Doe',
+    karma: 120,
+    wallet: 500,
+  });
+  sortOption = signal<'Latest' | 'Oldest'>('Latest');
+  filterOption = signal<'All' | 'Frontend' | 'Backend' | 'Fullstack'>('All');
 
-  constructor(private firebaseService: FirebaseService) {
-    this.loadJobs();
-  }
-
-  async loadJobs() {
-    const result = await this.firebaseService.getJobs();
-    this.jobs.set(result);
+  constructor(private firebaseService: FirebaseService, private router: Router) {
+    this.jobs$ = this.firebaseService.getJobs(); // This is like your Flutter stream
     this.loading.set(false);
+    console.log(this.jobs$);
+    console.log('uuid $uuidv4()');
+    // Listen to the Observable and update the signal automatically
+    this.jobs$.subscribe({
+      next: (data) => this.jobs.set(data),
+      error: (err) => console.error('Error loading jobs:', err)
+    });
+
+    // Optional: debug effect
+    effect(() => {
+      console.log('Jobs updated:', this.jobs());
+    });
   }
+
+
+  // Computed: filtered and sorted jobs
+  displayedJobs = computed(() => {
+    let filtered = this.jobs();
+    if (this.filterOption() !== 'All') {
+     // filtered = filtered.filter(job => job.type === this.filterOption());
+    }
+
+    if (this.sortOption() === 'Latest') {
+      return filtered;
+    } else {
+      return [...filtered].reverse();
+    }
+  });
+
+
+  // Update sort
+  setSort(option: 'Latest' | 'Oldest') {
+    this.sortOption.set(option);
+  }
+
+  // Update filter
+  setFilter(option: 'All' | 'Frontend' | 'Backend' | 'Fullstack') {
+    this.filterOption.set(option);
+  }
+
+  addJob(title: string) {
+
+  }
+
+  viewJob(id: string) {
+    this.router.navigate(['/job', 'BeglibAYfX0PP3vPSdA0']);
+  }
+
 }

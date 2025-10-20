@@ -1,12 +1,96 @@
-<div class="jobs-container">
-  <div *ngIf="loading()">Loading jobs...</div>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3 col-lg-2 bg-light border-end vh-100 d-flex flex-column p-3">
+      <!-- Logo -->
+      <div class="d-flex align-items-center mb-4">
+        <img src="assets/logo.svg" alt="Logo" class="me-2" width="40" />
+        <h4 class="m-0">JobBoard</h4>
+      </div>
 
-  <div *ngIf="!loading()">
-    <div *ngFor="let job of jobs()">
-      {{ job.shortDesc }}
+      <!-- User Info -->
+      <div class="text-center mb-4">
+        <img src="assets/user.png" alt="User Pic" class="rounded-circle mb-2" width="60" />
+        <h6>{{ user() ? user()!.name : 'Guest' }}</h6>
+        <div class="text-muted small">
+          <div>Karma: {{ user() ? user()!.karma : 0 }}</div>
+          <div>Points: {{ user() ? user()!.karma * 2 : 0 }}</div>
+          <div>Wallet: ${{ user() ? user()!.wallet : 0 }}</div>
+        </div>
+      </div>
+
+      <!-- Add New Job -->
+      <div>
+        <h6 class="fw-bold mb-2">Add New Job</h6>
+        <div class="input-group">
+          <input type="text" #jobInput class="form-control" placeholder="Job title" />
+          <button class="btn btn-primary" (click)="addJob(jobInput.value); jobInput.value=''">
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9 col-lg-10 p-4">
+      <!-- Controls -->
+      <div class="d-flex flex-wrap gap-2 mb-4">
+        <button class="btn btn-outline-primary" [class.active]="sortOption() === 'Latest'" (click)="setSort('Latest')">
+          Latest
+        </button>
+        <button class="btn btn-outline-primary" [class.active]="sortOption() === 'Oldest'" (click)="setSort('Oldest')">
+          Oldest
+        </button>
+
+        <div class="vr mx-2"></div>
+
+        <button class="btn btn-outline-success" [class.active]="filterOption() === 'All'"
+          (click)="setFilter('All')">All</button>
+        <button class="btn btn-outline-success" [class.active]="filterOption() === 'Frontend'"
+          (click)="setFilter('Frontend')">Frontend</button>
+        <button class="btn btn-outline-success" [class.active]="filterOption() === 'Backend'"
+          (click)="setFilter('Backend')">Backend</button>
+        <button class="btn btn-outline-success" [class.active]="filterOption() === 'Fullstack'"
+          (click)="setFilter('Fullstack')">Fullstack</button>
+      </div>
+
+      <!-- Job Cards -->
+      <div *ngIf="displayedJobs().length; else noJobs" class="row gy-3">
+        <div class="col-md-6 col-lg-4" *ngFor="let job of displayedJobs()">
+          <div class="card shadow-sm h-100">
+            <div class="card mb-3 shadow-sm job-card" (click)="viewJob('ghgh')" style="cursor: pointer;">
+              <div class="card-body">
+                <h5 class="card-title">{{ job.shortDesc }}</h5>
+                <p class="card-text text-muted mb-1">{{ job.createdAt }}</p>
+                <p class="card-text small">{{ job.createdAt }}</p>
+              </div>
+              <div class="card-footer text-end small text-muted">
+                Posted: {{ job.createdAt }}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+  <job-form-modal></job-form-modal>
+
+      <div>
+        <div *ngIf="jobs$ | async as jobs; else loading">
+          <ul>
+            <li *ngFor="let job of jobs">{{ job.username }}</li>
+          </ul>
+        </div>
+        <ng-template #loading>
+          <p>Loading jobs...</p>
+        </ng-template>
+     
+
+      </div>
+
+      <ng-template #noJobs>
+        <p class="text-center text-muted mt-5">No jobs to display.</p>
+      </ng-template>
     </div>
   </div>
 
-  <!-- Floating Button -->
-  <floating-button></floating-button>
 </div>

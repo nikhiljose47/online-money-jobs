@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, getDoc, getDocs, setDoc, addDoc, query, limit, serverTimestamp } from '@angular/fire/firestore';
+import { Firestore, collection, doc, getDoc, getDocs, setDoc, addDoc, query, limit, serverTimestamp, collectionData, onSnapshot, QuerySnapshot, DocumentData, docData, where, collectionSnapshots } from '@angular/fire/firestore';
 import { Auth, signInAnonymously, onAuthStateChanged, User } from '@angular/fire/auth';
 import { Observable, from, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -55,13 +55,27 @@ export class FirebaseService {
   // ===============================
   // 🔹 JOB CRUD
   // ===============================
-  async getJobs(limitCount: number = 20) {
-    const jobsQuery = query(collection(this.firestore, 'jobs'), limit(limitCount));
-    const snapshot = await getDocs(jobsQuery);
-    return snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+  // async getJobs(limitCount: number = 20) {
+  //   const jobsQuery = query(collection(this.firestore, 'jobs'), limit(limitCount));
+  //   const snapshot = await getDocs(jobsQuery);
+  //   return snapshot.docs.map((doc) => ({
+  //     id: doc.id,
+  //     ...doc.data(),
+  //   }));
+  // }
+
+  getJobs(): Observable<any[]> {
+    const jobsCollection = collection(this.firestore, 'jobs');
+
+    return new Observable<any[]>(subscriber => {
+      const unsubscribe = onSnapshot(jobsCollection, (snapshot: QuerySnapshot<DocumentData>) => {
+        const jobs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        subscriber.next(jobs);
+      }, error => subscriber.error(error));
+
+      // Cleanup on unsubscribe
+      return { unsubscribe };
+    });
   }
 
   async getFirstJobContact() {
@@ -73,7 +87,7 @@ export class FirebaseService {
   }
 
 
-    async addJob(username: string, shortDesc: string) {
+  async addJob(username: string, shortDesc: string) {
     const colRef = collection(this.firestore, 'jobs');
     await addDoc(colRef, {
       username,
@@ -82,7 +96,7 @@ export class FirebaseService {
     });
   }
 
-  
+
   // async addJob(job: {
   //   title: string;
   //   shortDesc: string;
@@ -113,6 +127,23 @@ export class FirebaseService {
     return new Observable((observer) => {
       const unsub = onAuthStateChanged(this.auth, (user) => observer.next(user));
       return () => unsub();
+    });
+  }
+
+  getSolutionById(jobId: string): Observable<any> {
+    const jobRef = doc(this.firestore, `solutions/${jobId}`);
+    return docData(jobRef, { idField: 'id' });
+  }
+
+  // Example function to add solution
+  async addSolution(jobId: string, userId: string, text: string) {
+    const solRef = collection(this.firestore, 'solutions');
+    await addDoc(solRef, {
+      jobId,
+      userId,
+      text,
+      verified: false,
+      createdAt: new Date()
     });
   }
 }

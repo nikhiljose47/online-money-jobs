@@ -1,0 +1,44 @@
+/* Curved gradient background */
+.curved-bg {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 30%;
+  height: 56px;
+  background: linear-gradient(105deg, #88acd2, #00b4d8);
+  border-bottom-left-radius: 140px;
+  z-index: 1;
+}
+
+/* Navigation bar on top of the curve */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  padding: 20px 50px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  z-index: 2;
+}
+
+/* Tabs */
+.nav-tabs {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-tabs li {
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-tabs li:hover {
+  transform: scale(1.05);
+}
