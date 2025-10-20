@@ -1,4 +1,4 @@
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, OnInit, signal } from '@angular/core';
 import { FirebaseService } from '../../services/firebase.service';
 import { CommonModule } from '@angular/common';
 import { FloatingButtonComponent } from '../floating-button/floating-button';
@@ -6,26 +6,19 @@ import { Observable } from 'rxjs';
 
 //
 import { v4 as uuidv4 } from 'uuid';
-
-interface Job {
-  title: string;
-  company: string;
-  type: 'Frontend' | 'Backend' | 'Fullstack';
-  postedAt: string;
-}
+import { Router } from '@angular/router';
+import { Job } from '../../models/job.model';
+import { JobFormModalComponent } from '../add-job/add-job';
 
 @Component({
   selector: 'home-page',
-  imports: [CommonModule, FloatingButtonComponent],
+  imports: [CommonModule, FloatingButtonComponent, JobFormModalComponent],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })
 export class Home {
   jobs$: Observable<any[]>;
   jobs = signal<Job[]>([
-    { title: 'Frontend Developer', company: 'ABC Corp', type: 'Frontend', postedAt: '2h ago' },
-    { title: 'Backend Developer', company: 'XYZ Ltd', type: 'Backend', postedAt: '5h ago' },
-    { title: 'Fullstack Developer', company: 'Tech Solutions', type: 'Fullstack', postedAt: '1d ago' },
   ]);
 
   loading = signal(true);
@@ -37,18 +30,29 @@ export class Home {
   sortOption = signal<'Latest' | 'Oldest'>('Latest');
   filterOption = signal<'All' | 'Frontend' | 'Backend' | 'Fullstack'>('All');
 
-  constructor(private firebaseService: FirebaseService) {
+  constructor(private firebaseService: FirebaseService, private router: Router) {
     this.jobs$ = this.firebaseService.getJobs(); // This is like your Flutter stream
     this.loading.set(false);
+    console.log(this.jobs$);
     console.log('uuid $uuidv4()');
-   // this.jobs$.forEach((e)=>this.jobs().push(e) .update)
+    // Listen to the Observable and update the signal automatically
+    this.jobs$.subscribe({
+      next: (data) => this.jobs.set(data),
+      error: (err) => console.error('Error loading jobs:', err)
+    });
+
+    // Optional: debug effect
+    effect(() => {
+      console.log('Jobs updated:', this.jobs());
+    });
   }
+
 
   // Computed: filtered and sorted jobs
   displayedJobs = computed(() => {
     let filtered = this.jobs();
     if (this.filterOption() !== 'All') {
-      filtered = filtered.filter(job => job.type === this.filterOption());
+     // filtered = filtered.filter(job => job.type === this.filterOption());
     }
 
     if (this.sortOption() === 'Latest') {
@@ -71,6 +75,10 @@ export class Home {
 
   addJob(title: string) {
 
+  }
+
+  viewJob(id: string) {
+    this.router.navigate(['/job', 'BeglibAYfX0PP3vPSdA0']);
   }
 
 }

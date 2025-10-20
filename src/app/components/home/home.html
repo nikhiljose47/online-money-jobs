@@ -24,8 +24,7 @@
         <h6 class="fw-bold mb-2">Add New Job</h6>
         <div class="input-group">
           <input type="text" #jobInput class="form-control" placeholder="Job title" />
-          <button class="btn btn-primary"
-            (click)="addJob(jobInput.value); jobInput.value=''">
+          <button class="btn btn-primary" (click)="addJob(jobInput.value); jobInput.value=''">
             Add
           </button>
         </div>
@@ -36,30 +35,22 @@
     <div class="col-md-9 col-lg-10 p-4">
       <!-- Controls -->
       <div class="d-flex flex-wrap gap-2 mb-4">
-        <button class="btn btn-outline-primary"
-          [class.active]="sortOption() === 'Latest'"
-          (click)="setSort('Latest')">
+        <button class="btn btn-outline-primary" [class.active]="sortOption() === 'Latest'" (click)="setSort('Latest')">
           Latest
         </button>
-        <button class="btn btn-outline-primary"
-          [class.active]="sortOption() === 'Oldest'"
-          (click)="setSort('Oldest')">
+        <button class="btn btn-outline-primary" [class.active]="sortOption() === 'Oldest'" (click)="setSort('Oldest')">
           Oldest
         </button>
 
         <div class="vr mx-2"></div>
 
-        <button class="btn btn-outline-success"
-          [class.active]="filterOption() === 'All'"
+        <button class="btn btn-outline-success" [class.active]="filterOption() === 'All'"
           (click)="setFilter('All')">All</button>
-        <button class="btn btn-outline-success"
-          [class.active]="filterOption() === 'Frontend'"
+        <button class="btn btn-outline-success" [class.active]="filterOption() === 'Frontend'"
           (click)="setFilter('Frontend')">Frontend</button>
-        <button class="btn btn-outline-success"
-          [class.active]="filterOption() === 'Backend'"
+        <button class="btn btn-outline-success" [class.active]="filterOption() === 'Backend'"
           (click)="setFilter('Backend')">Backend</button>
-        <button class="btn btn-outline-success"
-          [class.active]="filterOption() === 'Fullstack'"
+        <button class="btn btn-outline-success" [class.active]="filterOption() === 'Fullstack'"
           (click)="setFilter('Fullstack')">Fullstack</button>
       </div>
 
@@ -67,16 +58,33 @@
       <div *ngIf="displayedJobs().length; else noJobs" class="row gy-3">
         <div class="col-md-6 col-lg-4" *ngFor="let job of displayedJobs()">
           <div class="card shadow-sm h-100">
-            <div class="card-body">
-              <h5 class="card-title">{{ job.title }}</h5>
-              <p class="card-text text-muted mb-1">{{ job.company }}</p>
-              <p class="card-text small">{{ job.type }}</p>
+            <div class="card mb-3 shadow-sm job-card" (click)="viewJob('ghgh')" style="cursor: pointer;">
+              <div class="card-body">
+                <h5 class="card-title">{{ job.shortDesc }}</h5>
+                <p class="card-text text-muted mb-1">{{ job.createdAt }}</p>
+                <p class="card-text small">{{ job.createdAt }}</p>
+              </div>
+              <div class="card-footer text-end small text-muted">
+                Posted: {{ job.createdAt }}
+              </div>
             </div>
-            <div class="card-footer text-end small text-muted">
-              Posted: {{ job.postedAt }}
-            </div>
+
           </div>
         </div>
+      </div>
+  <job-form-modal></job-form-modal>
+
+      <div>
+        <div *ngIf="jobs$ | async as jobs; else loading">
+          <ul>
+            <li *ngFor="let job of jobs">{{ job.username }}</li>
+          </ul>
+        </div>
+        <ng-template #loading>
+          <p>Loading jobs...</p>
+        </ng-template>
+     
+
       </div>
 
       <ng-template #noJobs>
@@ -84,4 +92,5 @@
       </ng-template>
     </div>
   </div>
+
 </div>
