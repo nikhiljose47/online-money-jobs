@@ -128,9 +128,25 @@ export class FirebaseService {
     });
   }
 
-  getSolutionById(jobId: string): Observable<any> {
-    const jobRef = doc(this.firestore, `solutions/${jobId}`);
-    return docData(jobRef, { idField: 'id' });
+ getSolutionsById(jobId: string): Observable<any[]> {
+    const subCollectionRef = collection(this.firestore, `solutions/${jobId}/0`);
+
+    return new Observable<any[]>(subscriber => {
+      const unsubscribe = onSnapshot(
+        subCollectionRef,
+        (snapshot: QuerySnapshot<DocumentData>) => {
+          const solutions = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          subscriber.next(solutions);
+        },
+        error => subscriber.error(error)
+      );
+
+      // Cleanup listener when unsubscribed
+      return { unsubscribe };
+    });
   }
 
   // Example function to add solution

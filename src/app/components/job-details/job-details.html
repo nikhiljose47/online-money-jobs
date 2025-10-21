@@ -1,19 +1,8 @@
-<div *ngIf="solution$ | async as solution; else loading">
-  <div class="card mt-3">
-    <div class="card-body">
-      <!-- <h5 class="card-title">{{ solution.title || 'No Title' }}</h5>
-      <p class="card-text">{{ solution.abstract || solution.description }}</p> -->
-
-      <div class="mt-3">
-        <span class="badge bg-success" *ngIf="solution.isVerified">Verified ✅</span>
-        <span class="badge bg-secondary" *ngIf="!solution.isVerified">Unverified</span>
-      </div>
-
-      <p class="text-muted small mt-2">Solution ID: {{ solution.id }}</p>
-    </div>
+<div *ngIf="solutions$ | async as solutions; else loading">
+  <div *ngFor="let sol of solutions" class="card mb-2 p-2">
+    <h5>{{ sol.ans }}</h5>
   </div>
 </div>
-
 <ng-template #loading>
-  <p class="text-muted">Loading solution details...</p>
+  <p>Loading solutions...</p>
 </ng-template>

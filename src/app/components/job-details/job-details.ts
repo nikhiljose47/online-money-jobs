@@ -26,7 +26,7 @@ export class JobDetailsComponent {
 
   ngOnInit() {
     this.jobId = this.route.snapshot.paramMap.get('id')!;
-    this.solution$ = this.firestore.getSolutionById(this.jobId);
+    this.solutions$ = this.firestore.getSolutionsById(this.jobId);
     console.log('job Id  ' + this.solution$);
   }
 
