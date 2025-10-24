@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { FirebaseService } from '../../services/firebase.service';
+import { selectIsGuestMode } from '../../state/app.selector';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'job-details',
@@ -17,17 +19,20 @@ export class JobDetailsComponent {
   job$!: Observable<any>;
   solutions$!: Observable<any[]>;
   currentUserId = 'user123'; // Replace with auth userId
-
+  userMode$: any;
+ 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private firestore: FirebaseService
+    private firestore: FirebaseService,
+    private store: Store,
   ) { }
 
   ngOnInit() {
     this.jobId = this.route.snapshot.paramMap.get('id')!;
     this.solutions$ = this.firestore.getSolutionsById(this.jobId);
     console.log('job Id  ' + this.solution$);
+    this.userMode$ = this.store.select(selectIsGuestMode);
   }
 
   goBack() {

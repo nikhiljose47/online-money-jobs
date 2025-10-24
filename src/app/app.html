@@ -1,4 +1,13 @@
 <curved-navbar class="fixed-top"></curved-navbar>
-<div class="main-content">
-    <router-outlet></router-outlet>
+
+<div class="row">
+  <div class="col-md-2 col-sm-12">
+    <profile-bar></profile-bar>
+  </div>
+
+  <div class="col-md-10 col-sm-12 pt-4">
+    <div class="router-container pt-5">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>

@@ -21,11 +21,7 @@ export class Home {
   ]);
 
   loading = signal(true);
-  user = signal<{ name: string; karma: number; wallet: number } | null>({
-    name: 'Arjun Kumar (AK)',
-    karma: 120,
-    wallet: 500,
-  });
+
   sortOption = signal<'Latest' | 'Oldest'>('Latest');
   filterOption = signal<'All' | 'Frontend' | 'Backend' | 'Fullstack'>('All');
 

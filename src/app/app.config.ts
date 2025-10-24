@@ -11,6 +11,8 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 
 import { environment } from '../environments/environment';
 import { getAuth, provideAuth } from '@angular/fire/auth';
+import { provideStore } from '@ngrx/store';
+import { appReducer } from './state/app.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideHttpClient(withFetch()),
@@ -19,6 +21,5 @@ export const appConfig: ApplicationConfig = {
   provideRouter(routes), provideClientHydration(withEventReplay()),
   provideFirebaseApp(() => initializeApp(environment.firebase)),
   provideFirestore(() => getFirestore()),
-  provideAuth(() => getAuth()),
-  ]
+  provideAuth(() => getAuth()), provideStore({ app: appReducer })]
 };

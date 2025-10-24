@@ -1,8 +1,16 @@
-<div *ngIf="solutions$ | async as solutions; else loading">
-  <div *ngFor="let sol of solutions" class="card mb-2 p-2">
-    <h5>{{ sol.ans }}</h5>
+<div class="pt-4">
+      <span class="badge bg-info text-dark">
+      {{ (userMode$ | async) ? 'Guest' : 'User' }}
+    </span>
+  
+    
+  <div *ngIf="solutions$ | async as solutions; else loading">
+    <div *ngFor="let sol of solutions" class="card mb-2 p-2">
+      <h5>{{ sol.ans }}</h5>
+    </div>
   </div>
+
+  <ng-template #loading>
+    <p>Loading solutions...</p>
+  </ng-template>
 </div>
-<ng-template #loading>
-  <p>Loading solutions...</p>
-</ng-template>
