@@ -1,0 +1,17 @@
+<div class="card mb-3">
+  <!-- Title -->
+  <div class="card-header" *ngIf="title">
+    {{ title }}
+  </div>
+
+  <!-- Body -->
+  <div class="card-body" *ngIf="body">
+    <p class="card-text">{{ body }}</p>
+  </div>
+
+  <!-- Footer -->
+  <div class="card-footer text-muted" *ngIf="footer">
+    {{ footer }}
+  </div>
+</div>
+    

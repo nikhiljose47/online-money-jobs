@@ -79,6 +79,17 @@ export class FirebaseService {
     });
   }
 
+  async getJobById(jobId: string): Promise<any | null> {
+    const jobDocRef = doc(this.firestore, `jobs/${jobId}`);
+    const snapshot = await getDoc(jobDocRef);
+
+    if (snapshot.exists()) {
+      return { id: snapshot.id, ...snapshot.data() };
+    } else {
+      return null; // No document found
+    }
+  }
+
   async getFirstJobContact() {
     const snapshot = await getDocs(query(collection(this.firestore, 'jobs'), limit(1)));
     if (!snapshot.empty) {
@@ -128,7 +139,7 @@ export class FirebaseService {
     });
   }
 
- getSolutionsById(jobId: string): Observable<any[]> {
+  getSolutionsById(jobId: string): Observable<any[]> {
     const subCollectionRef = collection(this.firestore, `solutions/${jobId}/0`);
 
     return new Observable<any[]>(subscriber => {

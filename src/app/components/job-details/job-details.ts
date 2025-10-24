@@ -1,5 +1,5 @@
 // job-details.component.ts
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
@@ -7,17 +7,18 @@ import { FirebaseService } from '../../services/firebase.service';
 import { selectIsGuestMode } from '../../state/app.selector';
 import { Store } from '@ngrx/store';
 import { CustomPopup } from '../common/custom-popup/custom-popup';
+import { Card } from '../common/card/card';
+import { Job } from '../../models/job.model';
 
 @Component({
   selector: 'job-details',
   standalone: true,
-  imports: [CommonModule, CustomPopup],
+  imports: [CommonModule, CustomPopup, Card],
   templateUrl: './job-details.html',
 })
 export class JobDetailsComponent {
-  jobId!: string;
   solution$!: Observable<any>; // ✅ Observable for async pipe
-  job$!: Observable<any>;
+  job = signal<any | null>(null);
   solutions$!: Observable<any[]>;
   currentUserId = 'user123'; // Replace with auth userId
   isGuestMode$: any;
@@ -31,15 +32,24 @@ export class JobDetailsComponent {
   ) { }
 
   ngOnInit() {
-    this.jobId = this.route.snapshot.paramMap.get('id')!;
-    this.solutions$ = this.firestore.getSolutionsById(this.jobId);
+    var jobId = this.route.snapshot.paramMap.get('id')!;
+    this.solutions$ = this.firestore.getSolutionsById(jobId);
+    this.getJobById(jobId);
     console.log('job Id  ' + this.solution$);
     this.isGuestMode$ = this.store.select(selectIsGuestMode);
+
+  }
+
+  async getJobById(id: string){
+    const data = await this.firestore.getJobById(id);
+    this.job.set(data);
   }
 
   goBack() {
     this.router.navigate(['/']);
   }
+
+
 
   onActionClick(){
    // this.showPopup = false;

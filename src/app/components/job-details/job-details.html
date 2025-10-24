@@ -1,5 +1,7 @@
 <div class="pt-4">
 
+   <h1>{{job()?.shortDesc}}</h1>
+  <card [body] = "'dsds'">  </card>
   <div *ngIf="solutions$ | async as solutions; else loading">
     <div *ngFor="let sol of solutions" class="card mb-2 p-2">
       <h5>{{ sol.ans }}</h5>
