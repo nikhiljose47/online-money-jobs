@@ -1,14 +1,23 @@
 <div class="pt-4">
-      <span class="badge bg-info text-dark">
-      {{ (userMode$ | async) ? 'Guest' : 'User' }}
-    </span>
-  
-    
+
   <div *ngIf="solutions$ | async as solutions; else loading">
     <div *ngFor="let sol of solutions" class="card mb-2 p-2">
       <h5>{{ sol.ans }}</h5>
     </div>
   </div>
+
+  <button class="btn btn-primary" (click)="showPopup = true">Add Solution</button>
+  
+  
+
+  <custom-popup *ngIf = "isGuestMode$ | async; else addSolution" [title]="'Guest mode on'" [show]="showPopup" [onAction]="onActionClick.bind(this)"
+    (onClose)="showPopup = false">
+    <p>Please login to add a solution of yours.</p>
+  </custom-popup>
+
+  <ng-template #addSolution>
+    <p>Go to add solution action</p>
+  </ng-template>
 
   <ng-template #loading>
     <p>Loading solutions...</p>

@@ -1,0 +1,11 @@
+.custom-modal {
+  width: 100%;
+  height: 60vh;
+  min-height: 300px;
+  border-radius: 12px;
+}
+
+.modal-body {
+  overflow-y: auto;
+  max-height: calc(60vh - 120px);
+}

@@ -6,11 +6,12 @@ import { Observable } from 'rxjs';
 import { FirebaseService } from '../../services/firebase.service';
 import { selectIsGuestMode } from '../../state/app.selector';
 import { Store } from '@ngrx/store';
+import { CustomPopup } from '../common/custom-popup/custom-popup';
 
 @Component({
   selector: 'job-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CustomPopup],
   templateUrl: './job-details.html',
 })
 export class JobDetailsComponent {
@@ -19,7 +20,8 @@ export class JobDetailsComponent {
   job$!: Observable<any>;
   solutions$!: Observable<any[]>;
   currentUserId = 'user123'; // Replace with auth userId
-  userMode$: any;
+  isGuestMode$: any;
+  showPopup: boolean = false;
  
   constructor(
     private route: ActivatedRoute,
@@ -32,11 +34,15 @@ export class JobDetailsComponent {
     this.jobId = this.route.snapshot.paramMap.get('id')!;
     this.solutions$ = this.firestore.getSolutionsById(this.jobId);
     console.log('job Id  ' + this.solution$);
-    this.userMode$ = this.store.select(selectIsGuestMode);
+    this.isGuestMode$ = this.store.select(selectIsGuestMode);
   }
 
   goBack() {
     this.router.navigate(['/']);
+  }
+
+  onActionClick(){
+   // this.showPopup = false;
   }
 
   addSolution() {
