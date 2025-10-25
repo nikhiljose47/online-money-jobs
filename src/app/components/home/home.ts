@@ -1,17 +1,15 @@
 import { Component, computed, effect, OnInit, signal } from '@angular/core';
 import { FirebaseService } from '../../services/firebase.service';
 import { CommonModule } from '@angular/common';
-import { FloatingButtonComponent } from '../floating-button/floating-button';
 import { Observable } from 'rxjs';
 
 //
 import { Router } from '@angular/router';
 import { Job } from '../../models/job.model';
-import { JobFormModalComponent } from '../add-job/add-job';
 
 @Component({
   selector: 'online-money-jobs',
-  imports: [CommonModule, FloatingButtonComponent, JobFormModalComponent],
+  imports: [CommonModule],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })

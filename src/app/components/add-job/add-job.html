@@ -1,61 +1,87 @@
-<!-- Button to open modal -->
-<div class="text-center my-3">
-  <button class="btn btn-success" (click)="openModal()">➕ Add Job</button>
-</div>
+<div class="container-fluid px-md-5 py-4">
+  <h4 class="fw-bold text-primary mb-2">Add New Job</h4>
 
-<!-- Bootstrap Modal -->
-<div class="modal fade" #jobModal tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content rounded-4 shadow">
+  <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="px-3">
 
-      <div class="modal-header bg-primary text-white rounded-top-4">
-        <h5 class="modal-title">Add New Job</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <!-- Title and Short Description -->
+    <div class="row g-4 mb-3">
+      <div class="col-md-6">
+        <label class="form-label small fw-semibold">Job Title</label>
+        <input type="text" class="form-control form-control-sm" formControlName="title" placeholder="Enter job title" />
       </div>
-
-      <form [formGroup]="jobForm" (ngSubmit)="onSubmit()">
-        <div class="modal-body">
-
-          <div class="mb-3">
-            <label class="form-label">Title</label>
-            <input type="text" class="form-control" formControlName="title" />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Short Description</label>
-            <input type="text" class="form-control" formControlName="shortDesc" />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Description</label>
-            <textarea rows="3" class="form-control" formControlName="description"></textarea>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Status</label>
-            <select class="form-select" formControlName="status">
-              <option value="open">Open</option>
-              <option value="closed">Closed</option>
-              <option value="onhold">On Hold</option>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Posted By (User ID)</label>
-            <input type="text" class="form-control" formControlName="postedBy" />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Reward Offered</label>
-            <input type="number" class="form-control" formControlName="rewardOffered" />
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Save Job</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        </div>
-      </form>
+      <div class="col-md-6">
+        <label class="form-label small fw-semibold">Short Description</label>
+        <input type="text" class="form-control form-control-sm" formControlName="shortDesc" placeholder="One-line summary" />
+      </div>
     </div>
-  </div>
+
+    <!-- Description -->
+    <div class="mb-3">
+      <label class="form-label small fw-semibold">Full Description</label>
+      <textarea rows="3" class="form-control form-control-sm" formControlName="description"
+        placeholder="Describe job requirements, tasks, or context"></textarea>
+    </div>
+
+    <!-- Job Details -->
+    <div class="row g-4 mb-3">
+      <div class="col-md-6">
+        <label class="form-label small fw-semibold">Status</label>
+        <select class="form-select form-select-sm" formControlName="status">
+          <option value="open">Open</option>
+          <option value="closed">Closed</option>
+          <option value="onhold">On Hold</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small fw-semibold">Reward Offered (₹)</label>
+        <input type="number" class="form-control form-control-sm" formControlName="rewardOffered" placeholder="Enter reward amount" />
+      </div>
+    </div>
+
+    <!-- Posted By -->
+    <div class="mb-3">
+      <label class="form-label small fw-semibold">Posted By (User ID)</label>
+      <input type="text" class="form-control form-control-sm" formControlName="postedBy" placeholder="Enter user ID" />
+    </div>
+
+    <!-- Images -->
+    <div class="mb-4">
+      <label class="form-label small fw-semibold">Add Images (up to 3)</label>
+      <input type="file" accept="image/*" multiple (change)="onImageSelect($event)" class="form-control form-control-sm" />
+      <small class="text-muted d-block mt-1 small">Upload max 3 images (JPG, PNG)</small>
+
+      <div class="d-flex flex-wrap gap-3 mt-2">
+        <img *ngFor="let img of selectedImages"
+             [src]="img"
+             alt="Preview"
+             class="border rounded"
+             style="width: 120px; height: 120px; object-fit: cover;" />
+      </div>
+    </div>
+
+    <!-- Video Link -->
+    <div class="mb-4">
+      <label class="form-label small fw-semibold">Job Video (Optional)</label>
+      <input type="url" class="form-control form-control-sm" formControlName="videoLink"
+        placeholder="Paste video link (Google Drive, YouTube, etc.)" />
+      <small class="text-muted d-block mt-1 small">
+        Upload your video to <strong>Google Drive</strong> or <strong>YouTube</strong> and ensure it’s <strong>public</strong>.
+      </small>
+
+      <div class="mt-2">
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="checkVideoLink()">Check Link</button>
+        <span *ngIf="videoCheckStatus" class="ms-2 small"
+          [ngClass]="{'text-success': videoCheckStatus==='public', 'text-danger': videoCheckStatus==='private'}">
+          {{ videoCheckStatus === 'public' ? '✅ Link is Public' : '❌ Link Not Public' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="text-end mt-4">
+      <button type="submit" class="btn btn-success btn-sm px-4 me-2">Save</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm px-4" (click)="onCancel()">Cancel</button>
+    </div>
+
+  </form>
 </div>

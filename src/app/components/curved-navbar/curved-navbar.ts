@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
-import { FloatingButtonComponent } from '../floating-button/floating-button';
-import { AddJobPopup } from '../add-job-popup/add-job-popup';
-import { JobFormModalComponent } from '../add-job/add-job';
+import { AddJob } from '../add-job/add-job';
 import { RouterLink } from '@angular/router';
 import { ToggleButton } from '../buttons/toggle-button/toggle-button';
 
 @Component({
   selector: 'curved-navbar',
-  imports: [AddJobPopup, JobFormModalComponent, RouterLink, ToggleButton],
+  imports: [AddJob, RouterLink, ToggleButton],
   templateUrl: './curved-navbar.html',
   styleUrl: './curved-navbar.scss'
 })
