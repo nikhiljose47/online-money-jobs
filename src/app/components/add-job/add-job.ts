@@ -9,7 +9,7 @@ import { FirebaseService } from '../../services/firebase.service';
   templateUrl: './add-job.html',
   styleUrls: ['./add-job.scss'],
   standalone: true,
-    imports: [CommonModule, ReactiveFormsModule], // ✅ Correct imports
+  imports: [CommonModule, ReactiveFormsModule], // ✅ Correct imports
 })
 export class JobFormModalComponent {
   jobForm: FormGroup;
@@ -48,14 +48,14 @@ export class JobFormModalComponent {
     } else {
       this.jobForm.markAllAsTouched();
     }
-   
-    
-    
+
+
+
   }
 
-   username = '';
+  username = '';
   jobDetails = '';
-  
+
   loading = signal(false);
   message = signal('');
 
@@ -65,8 +65,6 @@ export class JobFormModalComponent {
     //   this.message.set('Please fill all fields.');
     //   return;
     // }
-    console.log('came add Job');
-    this.loading.set(true);
     try {
       await this.firebaseService.addJob(job);
       this.message.set('✅ Job added successfully!');

@@ -29,7 +29,6 @@ export class Home {
     this.jobs$ = this.firebaseService.getJobs(); // This is like your Flutter stream
     this.loading.set(false);
     console.log(this.jobs$);
-    console.log('uuid $uuidv4()');
     // Listen to the Observable and update the signal automatically
     this.jobs$.subscribe({
       next: (data) => this.jobs.set(data),

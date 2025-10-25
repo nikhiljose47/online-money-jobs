@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Firestore, collection, doc, getDoc, getDocs, setDoc, addDoc, query, limit, serverTimestamp, collectionData, onSnapshot, QuerySnapshot, DocumentData, docData, where, collectionSnapshots } from '@angular/fire/firestore';
 import { Auth, signInAnonymously, onAuthStateChanged, User } from '@angular/fire/auth';
 import { Observable, from, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { v4 as uuidv4 } from 'uuid';
 import { Job } from '../models/job.model';
 
 @Injectable({
@@ -101,8 +101,9 @@ export class FirebaseService {
 
   async addJob(job: Job) {
     const colRef = collection(this.firestore, 'jobs');
-    await addDoc(colRef, { id: job.id, title: job.title, shortDesc: job.shortDesc, description: job.description, status: job.status, createdAt: new Date().toISOString(), postedBy: 'user0', rewardOffered: job.rewardOffered, rating: job.rating }
+    await addDoc(colRef, { id: uuidv4(), title: job.title, shortDesc: job.shortDesc, description: job.description, status: job.status, createdAt: new Date().toISOString(), postedBy: 'user0', rewardOffered: job.rewardOffered, rating: job.rating }
     );
+    
   }
 
 
