@@ -3,6 +3,7 @@ import { Home } from './components/home/home';
 import { JobDetailsComponent } from './components/job-details/job-details';
 import { Notifications } from './components/notifications/notifications';
 import { AddJob } from './components/add-job/add-job';
+import { SolutionPreferences } from './components/solution-preferences/solution-preferences';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'online-money-jobs', pathMatch: 'full' },
@@ -10,4 +11,6 @@ export const routes: Routes = [
   { path: 'job/:id', component: JobDetailsComponent },
   { path: 'notifications', component: Notifications },
   { path: 'post-job', component: AddJob },
+  { path: 'solution-preferences', component: SolutionPreferences },
+
 ];

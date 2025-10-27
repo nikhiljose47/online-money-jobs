@@ -1,0 +1,50 @@
+<div class="container-fluid px-md-5 py-4">
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-8">
+            <h5 class="fw-bold text-primary mb-3">Add Your Solution</h5>
+
+            <form [formGroup]="solutionForm" (ngSubmit)="onSubmit()">
+
+                <!-- Text Solution -->
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Your Answer</label>
+                    <textarea rows="6" class="form-control form-control-sm" formControlName="text"
+                        placeholder="Write your solution or story here..."></textarea>
+                    <small class="text-muted">
+                        Minimum 20 characters. Must end with punctuation (., ?, !)
+                    </small>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="mb-4">
+                    <label class="form-label small fw-semibold">Add Images (up to 3)</label>
+                    <input type="file" accept="image/*" multiple (change)="onImageSelect($event)"
+                        class="form-control form-control-sm" />
+                    <div class="d-flex flex-wrap gap-3 mt-3">
+                        <img *ngFor="let img of selectedImages" [src]="img" alt="Preview" class="rounded border"
+                            style="width: 120px; height: 120px; object-fit: cover;" />
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-md-4 bg-light border-start ps-3">
+            <h6 class="fw-semibold mt-2">🧩 Solution Checks</h6>
+            <ul class="list-unstyled small mt-3">
+                <li [class.text-success]="solutionForm.get('text')?.value?.length >= 20">
+                    ✔ Minimum 20 characters
+                </li>
+                <li [class.text-success]="hasMinWords()">Has at least 5 words</li>
+            </ul>
+
+            <div class="mt-4 text-end">
+                <button type="submit" class="btn btn-success btn-sm px-4" [disabled]="!checksPassed()"
+                    (click)="onSubmit()">
+                    Submit Solution
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

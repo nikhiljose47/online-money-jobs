@@ -1,7 +1,7 @@
 <div class="container-fluid px-md-5 py-4">
   <h4 class="fw-bold text-primary mb-2">Add New Job</h4>
 
-  <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="px-3">
+  <form [formGroup]="jobForm" (ngSubmit)="onNext()" class="px-3">
 
     <!-- Title and Short Description -->
     <div class="row g-4 mb-3">
@@ -79,7 +79,7 @@
 
     <!-- Buttons -->
     <div class="text-end mt-4">
-      <button type="submit" class="btn btn-success btn-sm px-4 me-2">Save</button>
+      <button type="button" class="btn btn-primary btn-sm px-4 me-2" (click)="onNext()">Next</button>
       <button type="button" class="btn btn-outline-secondary btn-sm px-4" (click)="onCancel()">Cancel</button>
     </div>
 

@@ -4,6 +4,7 @@ import { Auth, signInAnonymously, onAuthStateChanged, User } from '@angular/fire
 import { Observable, from, of } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { Job } from '../models/job.model';
+import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ import { Job } from '../models/job.model';
 export class FirebaseService {
   private currentUser: User | null = null;
 
-  constructor(private firestore: Firestore, private auth: Auth) {
+  constructor(private firestore: Firestore, private auth: Auth, private storage: Storage) {
     // 🔹 Keep track of auth state
     onAuthStateChanged(this.auth, (user) => {
       this.currentUser = user;
@@ -65,17 +66,24 @@ export class FirebaseService {
   //   }));
   // }
 
-  getJobs(): Observable<any[]> {
+  getJobs(): Observable<Job[]> {
     const jobsCollection = collection(this.firestore, 'jobs');
 
-    return new Observable<any[]>(subscriber => {
-      const unsubscribe = onSnapshot(jobsCollection, (snapshot: QuerySnapshot<DocumentData>) => {
-        const jobs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        subscriber.next(jobs);
-      }, error => subscriber.error(error));
+    return new Observable<Job[]>(subscriber => {
+      const unsubscribe = onSnapshot(
+        jobsCollection,
+        (snapshot: QuerySnapshot<DocumentData>) => {
+          const jobs: Job[] = snapshot.docs.map(doc => ({
+            id: doc.id,        // Firestore document ID
+            ...doc.data() as Job, // Spread fields into Job model
+          }));
+          subscriber.next(jobs);
+        },
+        error => subscriber.error(error)
+      );
 
       // Cleanup on unsubscribe
-      return { unsubscribe };
+      return () => unsubscribe();
     });
   }
 
@@ -99,11 +107,45 @@ export class FirebaseService {
   }
 
 
+  // async addJob(job: Job) {
+  //   const colRef = collection(this.firestore, 'jobs');
+  //   await addDoc(colRef, { id: uuidv4(), title: job.title, shortDesc: job.shortDesc, description: job.description, status: job.status, createdAt: new Date().toISOString(), postedBy: 'user0', rewardOffered: job.rewardOffered, rating: job.rating }
+  //   );
+
+  // }
+
   async addJob(job: Job) {
-    const colRef = collection(this.firestore, 'jobs');
-    await addDoc(colRef, { id: uuidv4(), title: job.title, shortDesc: job.shortDesc, description: job.description, status: job.status, createdAt: new Date().toISOString(), postedBy: 'user0', rewardOffered: job.rewardOffered, rating: job.rating }
-    );
-    
+    const id = uuidv4();
+
+    const jobData = {
+      id,
+      ...job,
+    };
+
+    // 1️⃣ Create main job document
+    await setDoc(doc(this.firestore, `jobs/${id}`), jobData);
+
+    // 2️⃣ Create corresponding solutions doc
+    await setDoc(doc(this.firestore, `solutions/${id}`), { id });
+
+    // 3️⃣ Add a test document to make subcollection "0" appear
+    const subCollectionRef = collection(this.firestore, `solutions/${id}/0`);
+    await addDoc(subCollectionRef, {
+      test: true,
+      message: 'This is a test doc to initialize subcollection 0',
+      createdAt: new Date().toISOString(),
+    });
+
+    console.log(`Job created with id ${id}, subcollection 0 initialized ✅`);
+    return id;
+  }
+
+  async addSolutionToJob(jobId: string, solution: any) {
+    const jobDocRef = doc(this.firestore, `solutions/${jobId}`);
+    const subColRef = collection(jobDocRef, '0');
+    const docRef = await addDoc(subColRef, solution);
+
+    return docRef.id;
   }
 
 
@@ -147,29 +189,32 @@ export class FirebaseService {
       const unsubscribe = onSnapshot(
         subCollectionRef,
         (snapshot: QuerySnapshot<DocumentData>) => {
+          if (snapshot.empty) {
+            subscriber.next([]);
+            return;
+          }
+
           const solutions = snapshot.docs.map(doc => ({
             id: doc.id,
-            ...doc.data()
+            ...doc.data(),
           }));
           subscriber.next(solutions);
         },
         error => subscriber.error(error)
       );
 
-      // Cleanup listener when unsubscribed
-      return { unsubscribe };
+      return () => unsubscribe();
     });
   }
 
-  // Example function to add solution
-  async addSolution(jobId: string, userId: string, text: string) {
-    const solRef = collection(this.firestore, 'solutions');
-    await addDoc(solRef, {
-      jobId,
-      userId,
-      text,
-      verified: false,
-      createdAt: new Date()
-    });
+
+  async uploadImage(file: File, folder: string): Promise<string> {
+    const filePath = `${folder}/${Date.now()}_${file.name}`;
+    const storageRef = ref(this.storage, filePath);
+
+    const snapshot = await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+
+    return downloadURL;
   }
 }

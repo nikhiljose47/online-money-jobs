@@ -4,6 +4,7 @@ import { Job } from '../../models/job.model';
 import { CommonModule } from '@angular/common';
 import { FirebaseService } from '../../services/firebase.service';
 import { CommonService } from '../../services/common.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'job-form-modal',
@@ -18,7 +19,7 @@ export class AddJob {
   selectedImages: string[] = [];
   videoCheckStatus: 'public' | 'private' | null = null;
 
-  constructor(private fb: FormBuilder, private firebaseService: FirebaseService, private cdr: ChangeDetectorRef, private cmservices: CommonService) {
+  constructor(private fb: FormBuilder, private firebaseService: FirebaseService, private router: Router, private cdr: ChangeDetectorRef, private cmservices: CommonService) {
     this.jobForm = this.fb.group({
       title: ['', Validators.required],
       shortDesc: ['', [Validators.required, Validators.maxLength(150)]],
@@ -34,38 +35,47 @@ export class AddJob {
   }
 
   // ✅ Submit logic
-  async onSubmit() {
+  async onNext() {
     if (this.jobForm.valid) {
       const newJob: Job = this.jobForm.value;
       console.log('Job submitted:', newJob);
-      await this.firebaseService.addJob(newJob);
-      this.jobForm.reset();
+     
+      //await this.firebaseService.addJob(newJob);
+            this.router.navigate(['/solution-preferences'], {
+        state: { jobData: this.jobForm.value, images: this.selectedImages },
+      });
+         this.jobForm.reset();
+
     } else {
-      //  this.jobForm.markAllAsTouched();
+      this.jobForm.markAllAsTouched();
+      console.log('Form invalid!');
+
     }
   }
 
-  onCancel() { }
-
-onImageSelect(event: any) {
-  const files = event.target.files;
-  if (!files || files.length === 0) return;
-
-  // ✅ Keep existing images and allow up to 3 total
-  const remainingSlots = 3 - this.selectedImages.length;
-  const filesToAdd = Math.min(files.length, remainingSlots);
-
-  for (let i = 0; i < filesToAdd; i++) {
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      this.selectedImages.push(e.target.result);
-       this.cdr.detectChanges(); 
-    };
-    reader.readAsDataURL(files[i]);
+  onCancel() {
+    console.log('cam on cancel');
   }
 
-  console.log('Selected images:', this.selectedImages);
-}
+  onImageSelect(event: any) {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    // ✅ Keep existing images and allow up to 3 total
+    const remainingSlots = 3 - this.selectedImages.length;
+    const filesToAdd = Math.min(files.length, remainingSlots);
+
+    for (let i = 0; i < filesToAdd; i++) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.selectedImages.push(e.target.result);
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(files[i]);
+    }
+
+    console.log('Selected images:', this.selectedImages);
+  }
 
 
   checkVideoLink() {

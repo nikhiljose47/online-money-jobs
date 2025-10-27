@@ -1,0 +1,25 @@
+<div class="position-relative">
+  <input
+    type="text"
+    class="form-control form-control-sm"
+    [formControl]="searchControl"
+    placeholder="Search by title or description..."
+  />
+
+  <!-- Suggestion dropdown -->
+  <ul class="list-group position-absolute w-100 mt-1 shadow-sm" *ngIf="filteredJobs$ | async as jobs">
+    <li
+      *ngFor="let job of jobs"
+      (click)="selectSuggestion(job)"
+      class="list-group-item list-group-item-action small"
+      style="cursor: pointer;"
+    >
+      <strong>{{ job.title }}</strong>
+      <div class="text-muted">{{ job.shortDesc }}</div>
+    </li>
+
+    <li *ngIf="!jobs.length" class="list-group-item text-muted small">
+      No matches found
+    </li>
+  </ul>
+</div>

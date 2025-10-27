@@ -8,6 +8,7 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 //firebase
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { provideStorage, getStorage } from '@angular/fire/storage';
 
 import { environment } from '../environments/environment';
 import { getAuth, provideAuth } from '@angular/fire/auth';
@@ -21,5 +22,7 @@ export const appConfig: ApplicationConfig = {
   provideRouter(routes), provideClientHydration(withEventReplay()),
   provideFirebaseApp(() => initializeApp(environment.firebase)),
   provideFirestore(() => getFirestore()),
-  provideAuth(() => getAuth()), provideStore({ app: appReducer })]
+  provideAuth(() => getAuth()), provideStore({ app: appReducer }),
+  provideStorage(() => getStorage())
+  ]
 };

@@ -1,12 +1,16 @@
 <div class="container-fluid">
   <div class="row">
 
-    
+
 
     <!-- Main Content -->
     <div class="col-md-9 col-lg-10 p-4">
+
       <!-- Controls -->
       <div class="d-flex flex-wrap gap-2 mb-4">
+        <div>Search</div>
+        <search-bar [jobs]="jobs()" (jobSelected)="searchedJob($event)"></search-bar>
+
         <button class="btn btn-outline-primary" [class.active]="sortOption() === 'Latest'" (click)="setSort('Latest')">
           Latest
         </button>
@@ -30,7 +34,7 @@
       <div *ngIf="displayedJobs().length; else noJobs" class="row gy-3">
         <div class="col-md-6 col-lg-4" *ngFor="let job of displayedJobs()">
           <div class="card shadow-sm h-100">
-            <div class="card mb-3 shadow-sm job-card" (click)="viewJob('ghgh')" style="cursor: pointer;">
+            <div class="card mb-3 shadow-sm job-card" (click)="viewJob(job.id)" style="cursor: pointer;">
               <div class="card-body">
                 <h5 class="card-title">{{ job.title }}</h5>
                 <p class="card-text text-muted mb-1">{{ job.shortDesc }}</p>
@@ -55,7 +59,7 @@
         <ng-template #loading>
           <p>Loading jobs...</p>
         </ng-template> -->
-     
+
 
       </div>
 

@@ -1,24 +1,29 @@
 <div class="pt-4">
 
-   <h1>{{job()?.shortDesc}}</h1>
-  <card [body] = "'dsds'">  </card>
+  <h1>{{job()?.title}}</h1>
+  <h1>{{job()?.shortDesc}}</h1>
+  <h1>{{job()?.description}}</h1>
+
+  <!-- <card [body]="job()?.title"> </card> -->
   <div *ngIf="solutions$ | async as solutions; else loading">
     <div *ngFor="let sol of solutions" class="card mb-2 p-2">
-      <h5>{{ sol.ans }}</h5>
+      <h5>{{ sol.text }}</h5>
     </div>
   </div>
 
+  <div *ngIf="isGuestMode$ | async; else addSolution"> 
   <button class="btn btn-primary" (click)="showPopup = true">Add Solution</button>
-  
-  
 
-  <custom-popup *ngIf = "isGuestMode$ | async; else addSolution" [title]="'Guest mode on'" [show]="showPopup" [onAction]="onActionClick.bind(this)"
-    (onClose)="showPopup = false">
+
+  <custom-popup *ngIf="isGuestMode$ | async; else addSolution" [title]="'Guest mode on'" [show]="showPopup"
+    [onAction]="onActionClick.bind(this)" (onClose)="showPopup = false">
     <p>Please login to add a solution of yours.</p>
   </custom-popup>
+  </div>
+
 
   <ng-template #addSolution>
-    <p>Go to add solution action</p>
+    <add-solution [jobId] = "jobId" />
   </ng-template>
 
   <ng-template #loading>

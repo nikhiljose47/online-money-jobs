@@ -8,41 +8,46 @@ import { selectIsGuestMode } from '../../state/app.selector';
 import { Store } from '@ngrx/store';
 import { CustomPopup } from '../common/custom-popup/custom-popup';
 import { Card } from '../common/card/card';
+import { AddSolution } from '../add-solution/add-solution';
 import { Job } from '../../models/job.model';
 
 @Component({
   selector: 'job-details',
   standalone: true,
-  imports: [CommonModule, CustomPopup, Card],
+  imports: [CommonModule, CustomPopup, Card, AddSolution],
   templateUrl: './job-details.html',
 })
 export class JobDetailsComponent {
+  jobId: string = '';
   solution$!: Observable<any>; // ✅ Observable for async pipe
-  job = signal<any | null>(null);
+  job = signal<Job | null>(null);
   solutions$!: Observable<any[]>;
   currentUserId = 'user123'; // Replace with auth userId
   isGuestMode$: any;
   showPopup: boolean = false;
- 
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private firestore: FirebaseService,
     private store: Store,
+    private fireService: FirebaseService,
   ) { }
 
   ngOnInit() {
-    var jobId = this.route.snapshot.paramMap.get('id')!;
-    this.solutions$ = this.firestore.getSolutionsById(jobId);
-    this.getJobById(jobId);
-    console.log('job Id  ' + this.solution$);
+    this.jobId = this.route.snapshot.paramMap.get('id')!;
+    this.solutions$ = this.fireService.getSolutionsById(this.jobId);
+    console.log(this.solutions$);
+    this.getJobById(this.jobId);
     this.isGuestMode$ = this.store.select(selectIsGuestMode);
 
   }
 
-  async getJobById(id: string){
-    const data = await this.firestore.getJobById(id);
-    this.job.set(data);
+  async getJobById(id: string) {
+    const data = await this.fireService.getJobById(this.jobId); // still async internally
+    if (data) {
+      this.job.set(data); // store directly in signal
+    }
+
   }
 
   goBack() {
@@ -51,8 +56,8 @@ export class JobDetailsComponent {
 
 
 
-  onActionClick(){
-   // this.showPopup = false;
+  onActionClick() {
+    // this.showPopup = false;
   }
 
   addSolution() {

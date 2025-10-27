@@ -6,15 +6,17 @@ import { Observable } from 'rxjs';
 //
 import { Router } from '@angular/router';
 import { Job } from '../../models/job.model';
+import { SearchBar } from '../common/search-bar/search-bar';
 
 @Component({
   selector: 'online-money-jobs',
-  imports: [CommonModule],
+  imports: [CommonModule, SearchBar],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })
 export class Home {
-  jobs$: Observable<any[]>;
+  jobId: string = '';
+  jobs$: Observable<Job[]>;
   jobs = signal<Job[]>([
   ]);
 
@@ -24,6 +26,7 @@ export class Home {
   filterOption = signal<'All' | 'Frontend' | 'Backend' | 'Fullstack'>('All');
 
   constructor(private firebaseService: FirebaseService, private router: Router) {
+
     this.jobs$ = this.firebaseService.getJobs(); // This is like your Flutter stream
     this.loading.set(false);
     console.log(this.jobs$);
@@ -44,7 +47,7 @@ export class Home {
   displayedJobs = computed(() => {
     let filtered = this.jobs();
     if (this.filterOption() !== 'All') {
-     // filtered = filtered.filter(job => job.type === this.filterOption());
+      // filtered = filtered.filter(job => job.type === this.filterOption());
     }
 
     if (this.sortOption() === 'Latest') {
@@ -65,12 +68,15 @@ export class Home {
     this.filterOption.set(option);
   }
 
-  addJob(title: string) {
-
+  searchedJob(job: Job) {
+    console.log('Selected job:', job);
+    // navigate or display detail view
   }
 
-  viewJob(id: string) {
-    this.router.navigate(['/job', 'BeglibAYfX0PP3vPSdA0']);
+
+  viewJob(id: string | undefined) {
+    console.log('view job' + id)
+    this.router.navigate(['/job', id]);
   }
 
 }
