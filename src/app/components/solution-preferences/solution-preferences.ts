@@ -42,6 +42,6 @@ export class SolutionPreferences {
     // TODO: Upload to Firestore
     // this.firestore.collection('jobs').add(combinedData)
 
-    this.router.navigate(['/online-money-jobs']);
+    this.router.navigate(['/success-animation']);
   }
 }

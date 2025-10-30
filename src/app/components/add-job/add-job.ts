@@ -39,12 +39,12 @@ export class AddJob {
     if (this.jobForm.valid) {
       const newJob: Job = this.jobForm.value;
       console.log('Job submitted:', newJob);
-     
+
       //await this.firebaseService.addJob(newJob);
-            this.router.navigate(['/solution-preferences'], {
+      this.router.navigate(['/solution-preferences'], {
         state: { jobData: this.jobForm.value, images: this.selectedImages },
       });
-         this.jobForm.reset();
+      this.jobForm.reset();
 
     } else {
       this.jobForm.markAllAsTouched();

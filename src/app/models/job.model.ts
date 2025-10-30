@@ -8,7 +8,7 @@ export interface Job {
     updatedAt?: any;            // Firestore Timestamp
     postedBy: string;           // UID of user (ref to /users/{userId})
     postedByName?: string;      // User’s username (copied from users.username)
-    postedByPhoto?: string;     // User’s profile image (copied from users.photoURL)
+    tag: string;
     rewardOffered?: number;     // Reward or credit offered for job
     rating?: string;
 }

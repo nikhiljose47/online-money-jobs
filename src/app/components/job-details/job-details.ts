@@ -7,14 +7,13 @@ import { FirebaseService } from '../../services/firebase.service';
 import { selectIsGuestMode } from '../../state/app.selector';
 import { Store } from '@ngrx/store';
 import { CustomPopup } from '../common/custom-popup/custom-popup';
-import { Card } from '../common/card/card';
 import { AddSolution } from '../add-solution/add-solution';
 import { Job } from '../../models/job.model';
 
 @Component({
   selector: 'job-details',
   standalone: true,
-  imports: [CommonModule, CustomPopup, Card, AddSolution],
+  imports: [CommonModule, CustomPopup, AddSolution],
   templateUrl: './job-details.html',
 })
 export class JobDetailsComponent {
