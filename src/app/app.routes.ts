@@ -12,7 +12,7 @@ export const routes: Routes = [
   { path: 'job/:id', component: JobDetailsComponent },
   { path: 'notifications', component: Notifications },
   { path: 'post-job', component: AddJob },
-    { path: 'success-animation', component: SuccessAnimation },
+  { path: 'success-animation', component: SuccessAnimation },
   { path: 'solution-preferences', component: SolutionPreferences },
 
 ];

@@ -1,0 +1,23 @@
+.search-container {
+  position: relative;
+  z-index: 1050; /* ensures input stays above other sections */
+}
+
+.suggestion-dropdown {
+  z-index: 2000 !important; /* ensures dropdown overlaps modals, cards, etc. */
+  background-color: #fff;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.suggestion-dropdown .list-group-item {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.suggestion-dropdown .list-group-item:hover {
+  background-color: #f8f9fa;
+}
+
