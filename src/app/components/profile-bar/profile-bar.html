@@ -1,18 +1,20 @@
-  <!-- Logo -->
-  <div class="d-flex align-items-center mb-4">
-    <img src="assets/logo.svg" alt="online-money-logo" class="me-2" width="40" />
-    <h4 class="m-0">JobBoard</h4>
+<!-- Logo -->
+<div class="d-flex align-items-center mb-4">
+  <img src="assets/logo.svg" alt="online-money-logo" class="me-2" width="40" />
+  <h4 class="m-0">JobBoard</h4>
+</div>
+
+<!-- User Info -->
+<div class="text-center mb-4">
+  <img src="assets/asian-avatar.png" alt="User Pic" class="rounded-circle mb-2" width="60" />
+  <div *ngIf="user() as u">
+    <h3>{{ u.name }}</h3>
   </div>
 
-  <!-- User Info -->
-  <div class="text-center mb-4">
-    <img src="assets/asian-avatar.png" alt="User Pic" class="rounded-circle mb-2" width="60" />
-    <h6>{{ user()?.name || 'Guest' }}</h6>
-
-    <div class="text-muted small">
-      <div>Karma: {{ user()?.karma || 0 }}</div>
-      <img src="assets/animated/money-bag.gif" alt="money" class="me-2" width="40" />
-      <div>Points: {{ (user()?.karma ?? 0) * 2 }}</div>
-      <div>Wallet: ${{ user()?.wallet || 0 }}</div>
-    </div>
+  <div class="text-muted small">
+    <div>Karma: {{ user()?.karma || 0 }}</div>
+    <img src="assets/animated/money-bag.gif" alt="money" class="me-2" width="40" />
+    <div>Points: {{ (user()?.karma ?? 0) * 2 }}</div>
+    <div>Wallet: ${{ user()?.wallet || 0 }}</div>
   </div>
+</div>

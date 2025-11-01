@@ -1,7 +1,10 @@
-import { Component, Input, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FirebaseService } from '../../services/firebase.service';
+import { Observable } from 'rxjs';
+import { SolutionStruct } from '../../models/solution-struct.model';
+import { Job } from '../../models/job.model';
 
 @Component({
   selector: 'add-solution',
@@ -10,51 +13,77 @@ import { FirebaseService } from '../../services/firebase.service';
   templateUrl: './add-solution.html',
   styleUrls: ['./add-solution.scss']
 })
-export class AddSolution {
-  @Input() jobId!: string; 
-  solutionForm: FormGroup;
+export class AddSolution implements OnInit {
+  @Input() jobId!: string;
+  solutionForm!: FormGroup;
   selectedImages: string[] = [];
-  checksPassed = signal(false);
+  job = signal<Job | null>(null);
 
-  constructor(private fb: FormBuilder, private firebaseService: FirebaseService) {
-    this.solutionForm = this.fb.group({
-      text: ['', [Validators.required, Validators.minLength(20)]],
-      images: [[]],
-    });
+  solutionRules: SolutionStruct = {
+    imageCount: 1,
+    textLen: 150,
+    textContainsWords: [],
+  };
 
-    // Monitor text for validation
-    this.solutionForm.get('text')?.valueChanges.subscribe((text: string) => {
-      this.runChecks(text);
-    });
+
+  constructor(private cdr: ChangeDetectorRef, private fb: FormBuilder, private fire: FirebaseService) {
   }
 
-  hasMinWords(): boolean {
-  const text = this.solutionForm.get('text')?.value || '';
-  return text.trim().split(/\s+/).length >= 5;
-}
-
-  onImageSelect(event: any) {
-    const files = event.target.files;
-    const fileCount = Math.min(files.length, 3);
-    this.selectedImages = [];
-
-    for (let i = 0; i < fileCount; i++) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.selectedImages.push(e.target.result);
-      };
-      reader.readAsDataURL(files[i]);
+  async getJobById(id: string) {
+    const data = await this.fire.getJobById(this.jobId); // still async internally
+    if (data) {
+      this.job.set(data); // store directly in signal
+    }
+    if (this.job()) {
+      
+      console.log('sol rules', this.job()!.preferences)
+      this.solutionRules = this.job()!.preferences;
+       this.cdr.detectChanges();
     }
   }
 
-  runChecks(text: string) {
-    const hasEnoughWords = text.trim().split(/\s+/).length >= 5;
-    const endsWithPunctuation = /[.!?]$/.test(text.trim());
-    const isLongEnough = text.length >= 20;
-
-    // You can customize your rules here
-    this.checksPassed.set(hasEnoughWords && endsWithPunctuation && isLongEnough);
+  ngOnInit(): void {
+    this.solutionForm = this.fb.group({
+      text: [],
+    });
+    console.log('came with ID' + this.jobId);
+    this.getJobById(this.jobId);
   }
+
+  onImageSelect(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files) return;
+
+    const files = Array.from(input.files);
+    const maxImages = this.solutionRules.imageCount;
+
+    if (files.length > maxImages) {
+      alert(`You can upload up to ${maxImages} image(s) only.`);
+      input.value = ''; // reset
+      return;
+    }
+
+    this.selectedImages = [];
+    for (const file of files) {
+      const reader = new FileReader();
+      reader.onload = e => this.selectedImages.push(e.target?.result as string);
+      reader.readAsDataURL(file);
+    }
+  }
+  hasMinLength(): boolean {
+    const text = this.solutionForm.get('text')?.value || '';
+    return text.length >= this.solutionRules.textLen;
+  }
+
+  hasRequiredWords(): boolean {
+    const text = (this.solutionForm.get('text')?.value || '').toLowerCase();
+    return this.solutionRules.textContainsWords.every(w => text.includes(w.toLowerCase()));
+  }
+
+  checksPassed(): boolean {
+    return this.hasMinLength() && this.hasRequiredWords();
+  }
+
 
   async onSubmit() {
     if (this.solutionForm.valid && this.checksPassed()) {
@@ -63,7 +92,7 @@ export class AddSolution {
         images: this.selectedImages,
         createdAt: new Date().toISOString()
       };
-      await this.firebaseService.addSolutionToJob(this.jobId , solutionData);
+      await this.fire.addSolutionToJob(this.jobId, solutionData);
       alert('✅ Solution submitted successfully!');
       this.solutionForm.reset();
       this.selectedImages = [];

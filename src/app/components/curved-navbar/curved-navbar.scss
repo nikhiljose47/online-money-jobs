@@ -1,44 +1,25 @@
-/* Curved gradient background */
-.curved-bg {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 40%;
-  height: 56px;
-  background: linear-gradient(105deg, #88acd2, #00b4d8);
-  border-bottom-left-radius: 140px;
-  z-index: 1;
+.navbar.bg-gradient {
+  background: linear-gradient(90deg, #007bff, #6610f2);
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
 }
 
-/* Navigation bar on top of the curve */
-.nav-bar {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 100%;
-  padding: 20px 50px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  z-index: 2;
-}
-
-/* Tabs */
-.nav-tabs {
-  list-style: none;
-  display: flex;
-  gap: 30px;
-  margin: 0;
-  padding: 0;
-}
-
-.nav-tabs li {
-  color: white;
+.navbar-nav .nav-link {
+  color: rgba(48, 46, 46, 0.9);
   font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.3s;
 }
 
-.nav-tabs li:hover {
-  transform: scale(1.05);
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: #2e2e2e;
+}
+
+.btn-outline-light {
+  border-color: rgba(31, 29, 29, 0.6);
+}
+
+.btn-outline-light:hover {
+  background-color: #e0dada;
+  color: #007bff;
 }

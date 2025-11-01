@@ -29,12 +29,12 @@ export class JobDetailsComponent {
     private route: ActivatedRoute,
     private router: Router,
     private store: Store,
-    private fireService: FirebaseService,
+    private fire: FirebaseService,
   ) { }
 
   ngOnInit() {
     this.jobId = this.route.snapshot.paramMap.get('id')!;
-    this.solutions$ = this.fireService.getSolutionsById(this.jobId);
+    this.solutions$ = this.fire.getSolutionsById(this.jobId);
     console.log(this.solutions$);
     this.getJobById(this.jobId);
     this.isGuestMode$ = this.store.select(selectIsGuestMode);
@@ -42,11 +42,10 @@ export class JobDetailsComponent {
   }
 
   async getJobById(id: string) {
-    const data = await this.fireService.getJobById(this.jobId); // still async internally
+    const data = await this.fire.getJobById(this.jobId); // still async internally
     if (data) {
       this.job.set(data); // store directly in signal
     }
-
   }
 
   goBack() {

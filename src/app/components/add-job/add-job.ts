@@ -2,9 +2,9 @@ import { ChangeDetectorRef, Component, ElementRef, signal, ViewChild } from '@an
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Job } from '../../models/job.model';
 import { CommonModule } from '@angular/common';
-import { FirebaseService } from '../../services/firebase.service';
 import { CommonService } from '../../services/common.service';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'job-form-modal',
@@ -19,13 +19,12 @@ export class AddJob {
   selectedImages: string[] = [];
   videoCheckStatus: 'public' | 'private' | null = null;
 
-  constructor(private fb: FormBuilder, private firebaseService: FirebaseService, private router: Router, private cdr: ChangeDetectorRef, private cmservices: CommonService) {
+  constructor(private userService: UserService, private fb: FormBuilder, private router: Router, private cdr: ChangeDetectorRef, private cmservices: CommonService) {
     this.jobForm = this.fb.group({
       title: ['', Validators.required],
       shortDesc: ['', [Validators.required, Validators.maxLength(150)]],
       description: ['', Validators.required],
       status: ['open', Validators.required],
-      postedBy: ['', Validators.required],
       postedByName: [''],
       postedByPhoto: [''],
       rewardOffered: [null],
@@ -37,12 +36,17 @@ export class AddJob {
   // ✅ Submit logic
   async onNext() {
     if (this.jobForm.valid) {
-      const newJob: Job = this.jobForm.value;
+      const user = this.userService.getUser();
+      var newJob: Job = {
+        ...this.jobForm.value,
+        postedBy: user.userId,
+      };
+
       console.log('Job submitted:', newJob);
 
       //await this.firebaseService.addJob(newJob);
       this.router.navigate(['/solution-preferences'], {
-        state: { jobData: this.jobForm.value, images: this.selectedImages },
+        state: { jobData: newJob, images: this.selectedImages },
       });
       this.jobForm.reset();
 

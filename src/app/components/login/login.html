@@ -1,0 +1,21 @@
+    <div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-gradient">
+      <div class="card shadow p-4" style="width: 340px; border-radius: 20px;">
+        <h4 class="text-center mb-3 text-primary fw-bold">User Login</h4>
+
+        <form (ngSubmit)="login()" #f="ngForm">
+          <div class="mb-3">
+            <input type="email" [(ngModel)]="email" name="email" class="form-control"
+              placeholder="Email" required>
+          </div>
+
+          <div class="mb-3">
+            <input type="password" [(ngModel)]="password" name="password" class="form-control"
+              placeholder="Password" required>
+          </div>
+
+          <button class="btn btn-primary w-100 fw-semibold" [disabled]="f.invalid">Login</button>
+        </form>
+
+        <div *ngIf="errorMsg" class="alert alert-danger mt-3 py-2 small text-center">{{ errorMsg }}</div>
+      </div>
+    </div>

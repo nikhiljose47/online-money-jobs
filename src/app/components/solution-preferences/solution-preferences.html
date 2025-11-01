@@ -1,6 +1,6 @@
 <div class="container-fluid px-md-5 py-4">
   <div class="row">
-    
+
     <!-- LEFT: Preview (60%) -->
     <div class="col-md-7 border-end pe-4">
       <h5 class="fw-bold text-primary mb-3">Preview Job</h5>
@@ -47,16 +47,32 @@
         <div class="mb-3">
           <label class="form-label small fw-semibold">Required text length</label>
           <select class="form-select form-select-sm" formControlName="textLength">
-            <option value="20+">20+ words</option>
-            <option value="50+">50+ words</option>
-            <option value="custom">Custom</option>
+            <option value="10">10+ words</option>
+            <option value="20">20+ words</option>
+            <option value="100">100+ words</option>
+            <option value="300">300+ words</option>
           </select>
         </div>
 
-        <div *ngIf="prefForm.get('textLength')?.value === 'custom'" class="mb-3">
-          <input type="number" formControlName="customLength" class="form-control form-control-sm" placeholder="Enter minimum words" />
-        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">
+            The solution text must contain the following words:
+          </label>
 
+          <div formArrayName="textContainsWords">
+            <div *ngFor="let wordCtrl of textContainsWords.controls; let i = index" class="input-group mb-2">
+              <input [formControlName]="i" type="text" class="form-control form-control-sm"
+                placeholder="Enter a word" />
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeWord(i)">
+                ✕
+              </button>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-outline-primary btn-sm mt-2" (click)="addWord()">
+            + Add Word
+          </button>
+        </div>
         <div class="mb-3">
           <label class="form-label small fw-semibold">Additional instructions</label>
           <textarea rows="3" class="form-control form-control-sm" formControlName="instructions"

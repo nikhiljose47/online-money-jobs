@@ -1,24 +1,50 @@
-<div class="curved-bg"></div>
+<!-- Add this to your Angular component template -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient shadow-sm px-3">
+  <a class="navbar-brand fw-bold text-light" routerLink="/online-money-jobs">
+    <i class="bi bi-cash-stack me-1"></i> MoneyJobs
+  </a>
 
-<nav class="nav-bar">
-  <ul class="nav-tabs">
-    <li>
-      <toggle-button> </toggle-button>
-    </li>
-    <li>
-      <a routerLink="/online-money-jobs" routerLinkActive="active">Home</a>
-    </li>
-    <li>
-      <a routerLink="/post-job" routerLinkActive="active">Post Job</a>
-    </li>
-    <li>
-      <a routerLink="/notifications" routerLinkActive="active">Notifications</a>
-    </li>
-    <li>
-      <a routerLink="/profile" routerLinkActive="active">Profile</a>
-    </li>
-    <li>
-      <a routerLink="/settings" routerLinkActive="active">Settings</a>
-    </li>
-  </ul>
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#navbarNav"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+    <ul class="navbar-nav align-items-center">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/online-money-jobs" routerLinkActive="active">
+          <i class="bi bi-house-door"></i> Home
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/post-job" routerLinkActive="active">
+          <i class="bi bi-plus-square"></i> Post Job
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/notifications" routerLinkActive="active">
+          <i class="bi bi-bell"></i> Notifications
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/profile" routerLinkActive="active">
+          <i class="bi bi-person"></i> Profile
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/settings" routerLinkActive="active">
+          <i class="bi bi-gear"></i> Settings
+        </a>
+      </li>
+      <li class="nav-item ms-2">
+        <button class="btn btn-outline-light btn-sm" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </li>
+    </ul>
+  </div>
 </nav>

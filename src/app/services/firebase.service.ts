@@ -1,23 +1,37 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Firestore, collection, doc, getDoc, getDocs, setDoc, addDoc, query, limit, serverTimestamp, collectionData, onSnapshot, QuerySnapshot, DocumentData, docData, where, collectionSnapshots } from '@angular/fire/firestore';
-import { Auth, signInAnonymously, onAuthStateChanged, User } from '@angular/fire/auth';
+import { Auth, signInAnonymously, onAuthStateChanged, User, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
 import { Observable, from, of } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { Job } from '../models/job.model';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
+import { AppUser, UserService } from './user.service';
+import { CommonService } from './common.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FirebaseService {
   private currentUser: User | null = null;
+  private useFirebaseAuth = true; // 🔄 toggle this to false for local mode
+  user = signal<User | { email: string } | null>(null);
+  appUser: AppUser | null = null;
 
-  constructor(private firestore: Firestore, private auth: Auth, private storage: Storage) {
+
+  constructor(private CommonService: CommonService, private firestore: Firestore, private auth: Auth, private storage: Storage, private userService: UserService) {
+
+    if (this.CommonService.isBrowser()) {
+      const cachedUser = localStorage.getItem('app_user');
+      if (cachedUser) {
+        this.user.set(JSON.parse(cachedUser));
+      }
+    }
     // 🔹 Keep track of auth state
     onAuthStateChanged(this.auth, (user) => {
       this.currentUser = user;
       console.log('[Auth] Current user:', user?.uid);
     });
+    this.userService.user$.subscribe(u => this.appUser = u);
   }
 
   // ===============================
@@ -52,6 +66,36 @@ export class FirebaseService {
       console.log(`✅ New username "${username}" created for UID:`, uid);
       return { uid, username };
     }
+  }
+
+  async login(email: string, password: string) {
+    if (this.useFirebaseAuth) {
+      const res = await signInWithEmailAndPassword(this.auth, email, password);
+      this.user.set(res.user);
+      this.userService.setUser({ mode: 'user', userId: email, username: email });
+    } else {
+      // 🔹 Local mock authentication
+      if (email === 'user@test.com' && password === '123456') {
+        this.user.set({ email });
+        this.userService.setUser({ mode: 'user', userId: email, username: email });
+
+      } else {
+        throw new Error('Invalid local credentials');
+      }
+    }
+  }
+
+  async logout() {
+    if (this.useFirebaseAuth) {
+      await signOut(this.auth);
+    }
+    this.user.set(null);
+    this.userService.clearUser();
+
+  }
+
+  get isLoggedIn() {
+    return this.user() !== null;
   }
 
   // ===============================

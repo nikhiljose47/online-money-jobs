@@ -1,3 +1,5 @@
+import { SolutionStruct } from "./solution-struct.model";
+
 export interface Job {
     id?: string;                // Firestore document ID (jobId)
     title: string;              // Job title
@@ -11,4 +13,5 @@ export interface Job {
     tag: string;
     rewardOffered?: number;     // Reward or credit offered for job
     rating?: string;
+    preferences: SolutionStruct;
 }

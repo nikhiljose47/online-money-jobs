@@ -7,10 +7,11 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { Job } from '../../models/job.model';
 import { SearchBar } from '../common/search-bar/search-bar';
+import { Login } from '../login/login';
 
 @Component({
   selector: 'online-money-jobs',
-  imports: [CommonModule, SearchBar],
+  imports: [CommonModule, SearchBar, Login],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })
@@ -19,15 +20,17 @@ export class Home {
   jobs$: Observable<Job[]>;
   jobs = signal<Job[]>([
   ]);
+  userEmail = computed(() => this.fire.user()?.email ?? '');
+  isLoggedIn = computed(() => this.fire.isLoggedIn);
 
   loading = signal(true);
 
   sortOption = signal<'Latest' | 'Oldest'>('Latest');
   filterOption = signal<'All' | 'Frontend' | 'Backend' | 'Fullstack'>('All');
 
-  constructor(private firebaseService: FirebaseService, private router: Router) {
+  constructor(private router: Router, private fire: FirebaseService) {
 
-    this.jobs$ = this.firebaseService.getJobs(); // This is like your Flutter stream
+    this.jobs$ = this.fire.getJobs(); // This is like your Flutter stream
     this.loading.set(false);
     console.log(this.jobs$);
     // Listen to the Observable and update the signal automatically

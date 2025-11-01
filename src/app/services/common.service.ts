@@ -25,4 +25,7 @@ export class CommonService {
       throw error;
     }
   }
+    isBrowser(): boolean {
+    return typeof window !== 'undefined' && !!window.localStorage;
+  }
 }
